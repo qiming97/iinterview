@@ -1,0 +1,14 @@
+[build]
+builder = "NIXPACKS"
+
+[build.nixpacksConfig]
+installCommand = "npm install"
+buildCommand = "npm run build"
+
+[deploy]
+staticPublishPath = "/out/renderer"
+
+[variables]
+NODE_ENV = "production"
+
+
