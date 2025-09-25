@@ -43,19 +43,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loginLoading, setLoginLoading] = useState(false); // 登录loading
 
   const handleSessionExpired = () => {
+    console.warn('🔒 Session expired or authentication failed');
+    
     // 清除认证状态
     setUser(null);
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
 
-    // 显示会话过期对话框
+    // 显示认证失败对话框，包含多种可能的原因
     Modal.error({
-      title: i18n.t('auth.sessionExpiredTitle') || '会话已过期',
-      content: i18n.t('auth.sessionExpiredMessage') || '您的登录会话已过期，请重新登录以继续使用。',
+      title: i18n.t('auth.authFailedTitle') || '认证失败',
+      content: i18n.t('auth.authFailedMessage') || '您的登录会话已失效，可能的原因：\n• 登录会话已过期\n• 账户已被禁用\n• 账户已被删除\n\n请重新登录以继续使用。',
       okText: i18n.t('auth.relogin') || '重新登录',
       onOk: () => {
         // 对话框关闭后，用户状态已经被清除，ProtectedRoute会自动重定向到登录页
+        console.log('🔄 User confirmed re-login, will redirect to login page');
       },
     });
   };

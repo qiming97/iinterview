@@ -55,22 +55,47 @@ export const setSessionExpiredHandler = (handler: () => void) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Handle authentication failures (401 Unauthorized)
     if (error.response?.status === 401) {
       // 检查是否是登录接口的401错误，如果是则不触发会话过期处理
       const isLoginRequest = error.config?.url?.includes('/auth/login');
 
       if (!isLoginRequest) {
+        console.warn('🔒 Authentication failed - token may be invalid, user deleted, or account disabled');
+        
         // 调用会话过期处理器
         if (sessionExpiredHandler) {
           sessionExpiredHandler();
         } else {
           // 如果没有设置处理器，则使用默认行为
+          console.warn('⚠️ No session expired handler set, using default behavior');
           localStorage.removeItem('token');
           localStorage.removeItem('user');
-          window.location.href = '/login';
+          
+          // 在 Electron 环境中，使用 hash 路由
+          if (window.location.hash) {
+            window.location.hash = '#/login';
+          } else {
+            window.location.href = '/login';
+          }
         }
       }
     }
+    
+    // Handle forbidden access (403 Forbidden) - user may have lost permissions
+    else if (error.response?.status === 403) {
+      console.warn('🚫 Access forbidden - user may have lost permissions');
+      
+      // For 403 errors, we could also redirect to login or show a specific message
+      // but typically 403 means the user is authenticated but doesn't have permission
+      // We'll let the component handle this error for now
+    }
+    
+    // Handle server errors that might indicate authentication issues
+    else if (error.response?.status >= 500) {
+      console.error('🔥 Server error:', error.response?.status, error.response?.data);
+    }
+    
     return Promise.reject(error);
   }
 );

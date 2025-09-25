@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
@@ -7,6 +7,8 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import CollaborativeEditor from './components/CollaborativeEditor';
 import 'antd/dist/reset.css';
+
+
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -50,6 +52,29 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 function App(): React.JSX.Element {
   console.log('🎯 App component rendering...');
+  
+  // 穿透模式状态
+  const [isMouseThroughMode, setIsMouseThroughMode] = useState(false);
+
+  // 监听主进程的穿透模式状态变化
+  useEffect(() => {
+    const handleMouseThroughModeChanged = (_event: any, isEnabled: boolean) => {
+      console.log('📡 收到穿透模式状态变化:', isEnabled);
+      setIsMouseThroughMode(isEnabled);
+    };
+
+    // 检查是否在Electron环境中
+    if (window.electron && window.electron.ipcRenderer) {
+      window.electron.ipcRenderer.on('mouse-through-mode-changed', handleMouseThroughModeChanged);
+      
+      return () => {
+        window.electron.ipcRenderer.removeListener('mouse-through-mode-changed', handleMouseThroughModeChanged);
+      };
+    } else {
+      console.log('⚠️ 非Electron环境，无法监听IPC消息');
+      return undefined;
+    }
+  }, []);
 
   try {
     return (

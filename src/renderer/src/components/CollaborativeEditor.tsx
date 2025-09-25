@@ -71,6 +71,8 @@ const CollaborativeEditor: React.FC = () => {
   const [onlineUsers, setOnlineUsers] = useState<User[]>([]);
   const [currentLanguage, setCurrentLanguage] = useState('javascript');
   const [loading, setLoading] = useState(true);
+  // 穿透模式状态
+  const [isMouseThroughMode, setIsMouseThroughMode] = useState(false);
   const [initializationSteps, setInitializationSteps] = useState({
     roomDataLoaded: false,
     editorMounted: false,
@@ -86,6 +88,43 @@ const CollaborativeEditor: React.FC = () => {
   useEffect(() => {
     console.log('🔄 Initialization steps changed:', initializationSteps);
   }, [initializationSteps]);
+
+  // 监听穿透模式状态变化
+  useEffect(() => {
+    const handleMouseThroughModeChanged = (_event: any, isEnabled: boolean) => {
+      console.log('📡 房间内收到穿透模式状态变化:', isEnabled);
+      setIsMouseThroughMode(isEnabled);
+    };
+
+    // 检查穿透模式初始状态
+    const checkMouseThroughMode = async () => {
+      if (window.electron && window.electron.ipcRenderer) {
+        try {
+          const isEnabled = await window.electron.ipcRenderer.invoke('get-mouse-through-mode');
+          console.log('🔍 房间内检查穿透模式初始状态:', isEnabled);
+          setIsMouseThroughMode(isEnabled);
+        } catch (error) {
+          console.error('❌ 获取穿透模式状态失败:', error);
+        }
+      }
+    };
+
+    // 检查是否在Electron环境中
+    if (window.electron && window.electron.ipcRenderer) {
+      // 监听状态变化
+      window.electron.ipcRenderer.on('mouse-through-mode-changed', handleMouseThroughModeChanged);
+      
+      // 检查初始状态
+      checkMouseThroughMode();
+      
+      return () => {
+        window.electron.ipcRenderer.removeListener('mouse-through-mode-changed', handleMouseThroughModeChanged);
+      };
+    } else {
+      console.log('⚠️ 非Electron环境，无法监听穿透模式状态');
+      return undefined;
+    }
+  }, []);
   const [lastSavedContent, setLastSavedContent] = useState('');
   const [userCursors, setUserCursors] = useState<Map<string, { lineNumber: number; column: number; username: string; color: string }>>(new Map());
   const [userSelections, setUserSelections] = useState<Map<string, {
@@ -1434,6 +1473,9 @@ const CollaborativeEditor: React.FC = () => {
     editorRef.current = editor;
     monacoRef.current = monaco;
     
+    // 将编辑器实例暴露到全局，供主进程快捷键使用
+    (window as any).monacoEditorInstance = editor;
+    
     // 🔧 标记编辑器挂载完成
     setInitializationSteps(prev => ({
       ...prev,
@@ -2006,6 +2048,33 @@ const CollaborativeEditor: React.FC = () => {
         </Space>
 
         <Space>
+          {/* 穿透模式指示器 */}
+          {isMouseThroughMode && (
+            <div
+              style={{
+                color: 'rgba(255, 0, 0, 0.9)',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                animation: 'pulse 2s infinite',
+                userSelect: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              🔓 处于穿透模式
+              <style>{`
+                @keyframes pulse {
+                  0% { opacity: 1; }
+                  50% { opacity: 0.7; }
+                  100% { opacity: 1; }
+                }
+              `}</style>
+            </div>
+          )}
+
           {/* 所有用户都可以选择语言 */}
           <Select
             value={currentLanguage}
