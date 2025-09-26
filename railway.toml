@@ -1,8 +1,0 @@
-[build]
-builder = "NIXPACKS"
-
-[deploy]
-staticPublishPath = "dist/web"
-
-[variables]
-NODE_ENV = "production"
