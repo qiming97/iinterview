@@ -1,11 +1,6 @@
 [build]
 builder = "NIXPACKS"
 
-[build.nixpacksConfig]
-installCommand = "npm install"
-buildCommand = "npm run build:web-only"
-startCommand = ""
-
 [deploy]
 staticPublishPath = "dist/web"
 
