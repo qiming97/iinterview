@@ -33,6 +33,7 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@monaco-editor/react": "^4.6.0",
     "antd": "^5.27.3",
+    "axios": "^1.7.9",
     "copy-to-clipboard": "^3.3.3",
     "i18next": "^24.0.5",
     "i18next-browser-languagedetector": "^8.0.2",
