@@ -1,0 +1,8 @@
+[phases.install]
+cmds = ["pnpm install --no-frozen-lockfile"]
+
+[phases.build]
+cmds = ["pnpm run build:web-only"]
+
+[start]
+cmd = "echo 'Static site built'"
