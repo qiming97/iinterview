@@ -3,10 +3,10 @@ builder = "NIXPACKS"
 
 [build.nixpacksConfig]
 installCommand = "npm install"
-buildCommand = "npm run build"
+buildCommand = "npm run build:web-only"
 
 [deploy]
-staticPublishPath = "/out/renderer"
+staticPublishPath = "/dist/web"
 
 [variables]
 NODE_ENV = "production"
