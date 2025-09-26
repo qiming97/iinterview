@@ -10,6 +10,3 @@ staticPublishPath = "dist/web"
 
 [variables]
 NODE_ENV = "production"
-
-
-
