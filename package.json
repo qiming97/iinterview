@@ -16,7 +16,7 @@
     "build": "electron-vite build",
     "build:renderer": "vite build src/renderer --outDir out/renderer --config vite.renderer.config.ts",
     "build:web": "npm run build:renderer",
-    "build:web-only": "vite build --config vite.web.config.mjs",
+    "build:web-only": "vite build --config vite.web.config.mjs --mode production",
     "preview:web": "vite preview --config vite.web.config.mjs",
     "dev:web": "vite dev --config vite.web.config.mjs",
     "postinstall": "electron-builder install-app-deps",
