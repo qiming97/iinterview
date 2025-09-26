@@ -2,7 +2,7 @@
 builder = "NIXPACKS"
 
 [build.nixpacksConfig]
-installCommand = "pnpm install --no-frozen-lockfile"
+installCommand = "pnpm install"
 buildCommand = "pnpm run build:web-only"
 
 [deploy]
