@@ -2,11 +2,11 @@
 builder = "NIXPACKS"
 
 [build.nixpacksConfig]
-installCommand = "pnpm install"
-buildCommand = "pnpm build:web-only"
+installCommand = "npm install"
+buildCommand = "npm run build:web-only"
 
 [deploy]
-staticPublishPath = "dist/web"
+staticPublishPath = "/dist/web"
 
 [variables]
 NODE_ENV = "production"
