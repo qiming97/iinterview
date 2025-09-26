@@ -1,11 +1,11 @@
 [phases.setup]
-nixPkgs = ['nodejs-18_x', 'npm-9_x']
+nixPkgs = ['nodejs-20_x', 'pnpm-9_x']
 
 [phases.install]
-cmds = ['npm i']
+cmds = ['pnpm install']
 
 [phases.build]
-cmds = ['npm run build:web-only']
+cmds = ['pnpm  build:web-only']
 
 [start]
 cmd = 'echo "Static site built successfully"'

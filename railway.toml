@@ -2,8 +2,8 @@
 builder = "NIXPACKS"
 
 [build.nixpacksConfig]
-installCommand = "npm install"
-buildCommand = "npm run build:web-only"
+installCommand = "pnpm install"
+buildCommand = "pnpm build:web-only"
 
 [deploy]
 staticPublishPath = "dist/web"
