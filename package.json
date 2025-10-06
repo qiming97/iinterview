@@ -23,7 +23,7 @@
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win --x64",
     "build:mac": "electron-vite build && electron-builder --mac",
-    "build:mac:intel": "electron-vite build && electron-builder --mpc --x64",
+    "build:mac:intel": "electron-vite build && electron-builder --mac --x64",
     "build:linux": "electron-vite build && electron-builder --linux"
   },
   "dependencies": {
